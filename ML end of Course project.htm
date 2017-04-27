@@ -1,0 +1,539 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0139)file:///Users/angelina/Library/Application%20Support/LibreOffice/4/user/temp/lubeqd16.tmp/lubeqd4j.tmp/ML%20end%20of%20Course%20project.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title></title>
+	<meta name="GENERATOR" content="LibreOffice 4.1.3.2 (MacOSX)">
+	<meta name="CREATED" content="20170426;112527168302000">
+	<meta name="CHANGED" content="20170426;193214626270000">
+	<style type="text/css">
+	<!--
+		@page { margin: 0.79in }
+		P { margin-bottom: 0.08in }
+		TD P { margin-bottom: 0in }
+		A:link { so-language: zxx }
+	-->
+	</style>
+</head>
+<body lang="en-US" dir="LTR">
+<p style="margin-bottom: 0in"><font color="#2a2c2e"><font face="OpenSans, serif"><font size="4">Machine
+Learning end of Course Project</font></font></font></p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">The goal of the project is to determine
+how well participants performed weight lifting excercise. A sensor
+was attached to participant body, that measured and recorded how well
+each participant performed each exercise. Performance was rated from
+A – E. There were 19,622 records in training set and 20 records in
+test set with160 variables. Data can be found here</p>
+<p style="margin-bottom: 0in"><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a><font color="#205ec6"><font face="OpenSans, serif"><font size="3"><u>;</u></font></font></font></p>
+<p style="margin-bottom: 0in"><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"><font color="#205ec6"><font face="OpenSans, serif"><font size="3"><u>https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</u></font></font></font></a></p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">I read in data with readr package and
+read_csv function. The first task was to use summary(), head() and
+str() functions to understand data. Summary() showed there were many
+variables with values = NA. Next I used dplyr package and ggplot2
+packages to summarize data by user_name and classe. Classe is the
+grade assigned to performance for each activity. User_name was the
+identifier for each participant, there were 6 participants. Table
+below summarizes each user grade from A-E. 
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<table width="256" cellpadding="2" cellspacing="0" bgcolor="#ffffff">
+	<colgroup><col width="54">
+	<col width="40">
+	<col width="33">
+	<col width="33">
+	<col width="33">
+	<col width="32">
+	</colgroup><tbody><tr>
+		<td width="54" style="border: 2.75pt solid #000000; padding: 0.02in"></td>
+		<td width="40" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt"><b>A </b></font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt"><b>B </b></font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt"><b>C </b></font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt"><b>D </b></font></font>
+			</p>
+		</td>
+		<td width="32" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt"><b>E </b></font></font>
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr>
+		<td width="54" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">adelmo </font></font>
+			</p>
+		</td>
+		<td width="40" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">1165 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">776 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">750 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">515 </font></font>
+			</p>
+		</td>
+		<td width="32" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">686 </font></font>
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr>
+		<td width="54" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">carlitos
+			</font></font>
+			</p>
+		</td>
+		<td width="40" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">834 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">690 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">493 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">486 </font></font>
+			</p>
+		</td>
+		<td width="32" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">609 </font></font>
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr>
+		<td width="54" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">charles
+			</font></font>
+			</p>
+		</td>
+		<td width="40" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">899 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">745 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">539 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">642 </font></font>
+			</p>
+		</td>
+		<td width="32" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">711 </font></font>
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr>
+		<td width="54" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">eurico </font></font>
+			</p>
+		</td>
+		<td width="40" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">865 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">592 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">489 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">582 </font></font>
+			</p>
+		</td>
+		<td width="32" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">542 </font></font>
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr>
+		<td width="54" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">jeremy </font></font>
+			</p>
+		</td>
+		<td width="40" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">1177 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">489 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">652 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">522 </font></font>
+			</p>
+		</td>
+		<td width="32" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">562 </font></font>
+			</p>
+		</td>
+	</tr>
+	<tr></tr>
+	<tr>
+		<td width="54" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">pedro </font></font>
+			</p>
+		</td>
+		<td width="40" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">640 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">505 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">499 </font></font>
+			</p>
+		</td>
+		<td width="33" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">469 </font></font>
+			</p>
+		</td>
+		<td width="32" style="border: 2.75pt solid #000000; padding: 0.02in">
+			<p><font face="Times"><font size="2" style="font-size: 11pt">497 </font></font>
+			</p>
+		</td>
+	</tr>
+</tbody></table>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">Also see MLProjectPlot1.png and
+MLProjectPlot2.png for graphs of distribution of user_name and classe
+variables</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">Next I used the nzv() function to
+exclude some variables, this resulted in training set with 56
+variables but test set with 59 variables. I looked at details of the
+3 variables in the test set that was excluded from the training set,
+some had negative values. I decided to also exclude them from the
+training set , with the intention of revisiting if prediction had low
+accuracy without them. Said variables excluded are Magnet_dumbell_z,
+magnet_forearm_y and magnet_forearm_z. I also excluded the X variable
+from both test and training set. These variables are index variables
+and will not add value to prediction. I finally ended up with 54
+predictors (see Appendix III) plus classe variable – the response
+variable.</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">My plan was to use a decision tree,
+random forest and boosting or a combination to get 99% accuracy. I
+would train on cleansed data and use the 3 methods or a combination.
+Only employ cross validation, principal process analysis and scaling
+and centering of the predictors only if I did not get over 99%
+accuracy without them</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">I started with decision tree, it only
+gave 70%  accuracy in training set, using the Caret package train().
+Confusion matrix exhibit 4, shows a lot of inaccuracy across all
+scores.  Also, rpart$finalModel and decision tree plot -
+WeightTrainTree2.png only show predictor roll_belt variable for
+predicting. Train(method '”rpart”) ignored all other variables.
+But the varImp() on the model shows the following variable
+importance.</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"> Variable           			Overall</p>
+<p style="margin-bottom: 0in">roll_belt                        
+		100.00</p>
+<p style="margin-bottom: 0in">pitch_forearm                     
+		73.05</p>
+<p style="margin-bottom: 0in">accel_belt_z                      
+		61.15</p>
+<p style="margin-bottom: 0in">magnet_belt_y                     
+		57.99</p>
+<p style="margin-bottom: 0in">total_accel_belt                  
+		50.23</p>
+<p style="margin-bottom: 0in">total_accel_dumbbell               
+	0.00</p>
+<p style="margin-bottom: 0in">`cvtd_timestamp05/12/2011 14:24`   
+0.00</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">I thought decision tree plot and
+varImp() results were a contradiction. I also got very different
+results if I use rpart() vs train(method=”rpart”) for training. 
+At this point I decided to go on to random forest and boosting. 
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">Next I trained data using Caret package
+train() for random forests. To decrease run time I used
+traincontrol() with train(). The result was 99.9% accuracy and .03%
+error rate on the training set, 
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">&gt; rf</p>
+<p style="margin-bottom: 0in">Random Forest 
+</p>
+<p style="margin-bottom: 0in">19622 samples</p>
+<p style="margin-bottom: 0in">   54 predictor</p>
+<p style="margin-bottom: 0in">    5 classes: 'A', 'B', 'C', 'D', 'E' 
+</p>
+<p style="margin-bottom: 0in">No pre-processing</p>
+<p style="margin-bottom: 0in">Resampling: Cross-Validated (10 fold) 
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">  mtry  Accuracy   Kappa    
+</p>
+<p style="margin-bottom: 0in">   2    0.9910819  0.9887181</p>
+<p style="margin-bottom: 0in">  39    0.9995414  0.9994199</p>
+<p style="margin-bottom: 0in">  76    0.9995414  0.9994199</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">I thought result was pretty good and no
+need to adjust predictors or use any other method if prediction on
+test set was up to 95% accurate.  Next I looked at the important
+variables(appendix I), just to have an idea what was driving
+prediction. Also, if I needed to revisit Decision Tree, it would give
+me an idea what variables to include/exclude. 
+</p>
+<p style="margin-bottom: 0in">Since accuracy was over 99% with random
+forest on training set, I thought data was clean and standardized
+enough, no need for further processing. Next I used the predict() to
+make predictions on the test set, the result was;</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"> [1] B A B A A E D B A A B C B A E E A
+B B B</p>
+<p style="margin-bottom: 0in">Levels: A B C D E</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">Actual user performance was not
+included in test set, I took quiz to see how good the predictions
+were, the result- 20 out of 20 predictions were correct. Though test
+set sample size was only 20, 100% accuracy was impressive. I decided
+random forest was a good model to predict this exercise and no
+further refinement of training set was needed.</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">For completion, and comparison between
+random forest and boosting I decided to predict with Caret package
+boosting and method =”gbm”. Boosting accuracy was .995% on
+training set. 
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">Stochastic Gradient Boosting 
+</p>
+<p style="margin-bottom: 0in">19622 samples</p>
+<p style="margin-bottom: 0in">   54 predictor</p>
+<p style="margin-bottom: 0in">    5 classes: 'A', 'B', 'C', 'D', 'E' 
+</p>
+<p style="margin-bottom: 0in">Resampling: Bootstrapped (25 reps) 
+</p>
+<p style="margin-bottom: 0in">  interaction.depth  n.trees  Accuracy 
+ Kappa    
+</p>
+<p style="margin-bottom: 0in">  1                   50      0.8349587
+ 0.7906257</p>
+<p style="margin-bottom: 0in">  1                  100      0.8926579
+ 0.8640909</p>
+<p style="margin-bottom: 0in">  1                  150      0.9221697
+ 0.9014436</p>
+<p style="margin-bottom: 0in">  2                   50      0.9531231
+ 0.9406699</p>
+<p style="margin-bottom: 0in">  2                  100      0.9859655
+ 0.9822484</p>
+<p style="margin-bottom: 0in">  2                  150      0.9920218
+ 0.9899092</p>
+<p style="margin-bottom: 0in">  3                   50      0.9833775
+ 0.9789730</p>
+<p style="margin-bottom: 0in">  3                  100      0.9935119
+ 0.9917939</p>
+<p style="margin-bottom: 0in">  3                  150      0.9963097
+ 0.9953327</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">First 20 Importance variables were the
+same for boosting and random forest. Finally, I got boosting
+prediction on the test set and compared to random forest result. Both
+boosting and random forest prediction were the same and 100% accurate
+on test set appendix II</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in">In conclusion, prediction with Caret
+package random forest or boosting(gbm) gave over 99% accuracy on
+training set and 100% accuracy on test set. See appendix III for
+predictors used to train models and ML_wk4_projectB.R for R code used
+for prediction.</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"><u>Appendix I – Random Forest
+Important variables</u></p>
+<p style="margin-bottom: 0in"> only 20 most important variables shown
+(out of 76)</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"> Predictors                            
+              Overall</p>
+<p style="margin-bottom: 0in">raw_timestamp_part_1          
+		100.000</p>
+<p style="margin-bottom: 0in">num_window                     
+		50.542</p>
+<p style="margin-bottom: 0in">roll_belt                      
+		42.875</p>
+<p style="margin-bottom: 0in">pitch_forearm                  
+		26.347</p>
+<p style="margin-bottom: 0in">pitch_belt                     
+		17.075</p>
+<p style="margin-bottom: 0in">magnet_dumbbell_y              
+		16.592</p>
+<p style="margin-bottom: 0in">roll_forearm                   
+		15.175</p>
+<p style="margin-bottom: 0in">yaw_belt                       
+		14.151</p>
+<p style="margin-bottom: 0in">cvtd_timestamp30/11/2011 17:12  	11.284</p>
+<p style="margin-bottom: 0in">cvtd_timestamp28/11/2011 14:15   	9.890</p>
+<p style="margin-bottom: 0in">cvtd_timestamp02/12/2011 14:58   	9.688</p>
+<p style="margin-bottom: 0in">cvtd_timestamp02/12/2011 13:33   	7.513</p>
+<p style="margin-bottom: 0in">accel_belt_z                    		
+7.217</p>
+<p style="margin-bottom: 0in">cvtd_timestamp05/12/2011 11:24   	6.721</p>
+<p style="margin-bottom: 0in">magnet_dumbbell_x                	6.688</p>
+<p style="margin-bottom: 0in">cvtd_timestamp02/12/2011 13:35   	5.745</p>
+<p style="margin-bottom: 0in">accel_forearm_x                 
+		5.661</p>
+<p style="margin-bottom: 0in">accel_dumbbell_y                
+		5.647</p>
+<p style="margin-bottom: 0in">cvtd_timestamp02/12/2011 13:34   	5.433</p>
+<p style="margin-bottom: 0in">roll_dumbbell                   
+		5.334</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"><u>Appendix II Random Forest vs
+Boosting(gbm) Prediction</u></p>
+<p style="margin-bottom: 0in">z&lt;-cbind(rfpred,gbmPred)</p>
+<p style="margin-bottom: 0in">z</p>
+<p style="margin-bottom: 0in">      rfpred gbmPred</p>
+<p style="margin-bottom: 0in"> [1,]      2       2</p>
+<p style="margin-bottom: 0in"> [2,]      1       1</p>
+<p style="margin-bottom: 0in"> [3,]      2       2</p>
+<p style="margin-bottom: 0in"> [4,]      1       1</p>
+<p style="margin-bottom: 0in"> [5,]      1       1</p>
+<p style="margin-bottom: 0in"> [6,]      5       5</p>
+<p style="margin-bottom: 0in"> [7,]      4       4</p>
+<p style="margin-bottom: 0in"> [8,]      2       2</p>
+<p style="margin-bottom: 0in"> [9,]      1       1</p>
+<p style="margin-bottom: 0in">[10,]      1       1</p>
+<p style="margin-bottom: 0in">[11,]      2       2</p>
+<p style="margin-bottom: 0in">[12,]      3       3</p>
+<p style="margin-bottom: 0in">[13,]      2       2</p>
+<p style="margin-bottom: 0in">[14,]      1       1</p>
+<p style="margin-bottom: 0in">[15,]      5       5</p>
+<p style="margin-bottom: 0in">[16,]      5       5</p>
+<p style="margin-bottom: 0in">[17,]      1       1</p>
+<p style="margin-bottom: 0in">[18,]      2       2</p>
+<p style="margin-bottom: 0in">[19,]      2       2</p>
+<p style="margin-bottom: 0in">[20,]      2       2</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"><u>Appendix III – Predictors used in
+Training Set</u></p>
+<p style="margin-bottom: 0in"> colnames(training)</p>
+<p style="margin-bottom: 0in"> [1] "user_name"           
+"raw_timestamp_part_1" "raw_timestamp_part_2"</p>
+<p style="margin-bottom: 0in"> [4] "cvtd_timestamp"      
+"num_window"           "roll_belt"           
+</p>
+<p style="margin-bottom: 0in"> [7] "pitch_belt"          
+"yaw_belt"             "total_accel_belt"    
+</p>
+<p style="margin-bottom: 0in">[10] "gyros_belt_x"        
+"gyros_belt_y"         "gyros_belt_z"        
+</p>
+<p style="margin-bottom: 0in">[13] "accel_belt_x"        
+"accel_belt_y"         "accel_belt_z"        
+</p>
+<p style="margin-bottom: 0in">[16] "magnet_belt_x"       
+"magnet_belt_y"        "magnet_belt_z"       
+</p>
+<p style="margin-bottom: 0in">[19] "roll_arm"            
+"pitch_arm"            "yaw_arm"             
+</p>
+<p style="margin-bottom: 0in">[22] "total_accel_arm"     
+"gyros_arm_x"          "gyros_arm_y"         
+</p>
+<p style="margin-bottom: 0in">[25] "gyros_arm_z"         
+"accel_arm_x"          "accel_arm_y"         
+</p>
+<p style="margin-bottom: 0in">[28] "accel_arm_z"         
+"magnet_arm_x"         "magnet_arm_y"        
+</p>
+<p style="margin-bottom: 0in">[31] "magnet_arm_z"        
+"roll_dumbbell"        "pitch_dumbbell"      
+</p>
+<p style="margin-bottom: 0in">[34] "yaw_dumbbell"        
+"total_accel_dumbbell" "gyros_dumbbell_x"    
+</p>
+<p style="margin-bottom: 0in">[37] "gyros_dumbbell_y"    
+"gyros_dumbbell_z"     "accel_dumbbell_x"    
+</p>
+<p style="margin-bottom: 0in">[40] "accel_dumbbell_y"    
+"accel_dumbbell_z"     "magnet_dumbbell_x"   
+</p>
+<p style="margin-bottom: 0in">[43] "magnet_dumbbell_y"   
+"roll_forearm"         "pitch_forearm"       
+</p>
+<p style="margin-bottom: 0in">[46] "yaw_forearm"         
+"total_accel_forearm"  "gyros_forearm_x"     
+</p>
+<p style="margin-bottom: 0in">[49] "gyros_forearm_y"     
+"gyros_forearm_z"      "accel_forearm_x"     
+</p>
+<p style="margin-bottom: 0in">[52] "accel_forearm_y"     
+"accel_forearm_z"      "magnet_forearm_x"</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+<p style="margin-bottom: 0in"><br>
+</p>
+
+</body></html>
