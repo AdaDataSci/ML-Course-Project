@@ -1,0 +1,165 @@
+---
+title: "ML Wk4 Project_B"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message =FALSE,warning=FALSE)
+```
+
+## R Markdown
+
+Machine Learning end of Course Project
+
+The goal of the project is to determine how well participants performed weight lifting excercise. A sensor was attached to participant body,it measured and recorded how well each participant performed each exercise. Performance was rated from A – E. There were 19,622 records in training set and 20 records in test set, with 160 variables. Data can be found here
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv;
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+I read in data with readr package and read_csv function. The first task was to use summary(), head() and str() functions to understand data. Summary() showed there were many variables with values = NA. Next I used dplyr package and ggplot2 packages to summarize data by user_name and classe. Classe is the grade assigned to performance for each activity. User_name was the identifier for each participant, there were 6 participants. Table below summarizes each user grade from A-E. 
+
+```{R, echo=FALSE,message =FALSE,warning=FALSE}
+library(caret)
+library(dplyr)
+library(rattle)
+library(readr)
+library(rpart.plot)
+library(xtable)
+library(parallel)
+library(doParallel)
+library(randomForest)
+set.seed(123)
+#download training set from internet
+fileurl<- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+download.file(fileurl, destfile ="/Users/angelina/Desktop/CourseEra/training", method = "curl")
+
+#download testing set from internet
+fileurl2<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+download.file(fileurl2,destfile="/Users/angelina/Desktop/CourseEra/testing",method = "curl")
+#training and test set data frame
+training<-read_csv("/Users/angelina/Desktop/CourseEra/training")
+testing<- read_csv("/Users/angelina/Desktop/CourseEra/testing")
+ #similar to read.table
+sumtrain<- as.data.frame.matrix(training %>%group_by(user_name) %>%select(classe) %>% table())
+```
+
+```{R,echo =TRUE}
+sumtrain
+```
+Also see Appendix A or MLProjectPlot1.png and Appendix B or MLProjectPlot2.png for graphs of distribution of user_name and classe variables
+
+Next I used the nzv() function to exclude some variables, this resulted in training set with 56 variables but test set with 59 variables. I looked at details of the 3 variables in the test set that was excluded from the training set, some had negative values. I decided to also exclude them from the training set , with the intention of revisiting if prediction had low accuracy without them. Said variables excluded are Magnet_dumbell_z, magnet_forearm_y and magnet_forearm_z. I also excluded the X variable from both test and training set. These variables are index variables and will not add value to prediction. I finally ended up with 54 predictors (see Appendix III) plus 'classe'– the response variable.
+
+```{r,echo=FALSE,include=FALSE}
+
+g<-ggplot(training, aes(y = ..count..,x =user_name,fill = classe))
+h<-ggplot(training, aes(y = ..count..,x =classe,fill = user_name))
+nzv <- nearZeroVar(training, saveMetrics=TRUE)
+nzv2 <- which(nzv$nzv==TRUE)
+training <- training[,-nzv2]
+testing <- testing[,-nzv2]
+training<- training[,apply(!is.na(training), 2, all)]
+testing <- testing[,apply(!is.na(testing), 2, all)]
+#after scrubbing above training set has 56 variables
+#test set has 59. Remove extra variables from test set too.
+testing<-select(testing,c(1:44,46:56,59))
+
+#remove variable X they are index vairables
+str(training$X)
+training<-training[,-1]
+testing<-testing[,-c(1)]
+```
+The plan -use a decision tree, random forest and boosting or a combination to get 99% accuracy. I would train on cleansed data and use the 3 methods or a combination. Only employ cross validation, principal process analysis and scaling and centering of the predictors only if I did not get over 99% accuracy without them
+
+```{r,echo=FALSE}
+rpart<-train(classe~., data =training, method="rpart")
+rpart
+```
+
+```{r,echo=TRUE}
+rpart$finalModel
+```
+
+I started with decision tree, it only gave 70%  accuracy in training set, using the Caret package train(). Confusion matrix, shows a lot of inaccuracy across all scores.  
+
+```{r,echo=TRUE}
+confusionMatrix(rpart)
+```
+Also, rpart$finalModel and decision tree plot (Appendix C or WeightTrainTree2.png) only show predictor roll_belt variable for predicting. Train(method '”rpart”) ignored all other variables. But the varImp() on the model shows the following variable importance.
+
+```{r,echo=TRUE}
+varImp(rpart)
+```
+
+I thought decision tree plot and varImp() results were a contradiction. I also got very different results if I use base R rpart() vs Caret train(method=”rpart”) for training.  At this point I decided to go on to random forest and boosting. 
+
+Next I trained data using Caret package train() for random forests. To decrease run time I used traincontrol() with train(). The result was 99.9% accuracy and .03% error rate on the training set, 
+
+```{r,echo=FALSE}
+cluster <- makeCluster(detectCores() - 1)
+registerDoParallel(cluster)
+fitControl <- trainControl(method = "cv",
+                           number = 10,
+                           allowParallel = TRUE)
+rf<-train(classe~., data =training, method="rf", 
+          trControl = fitControl)
+stopCluster(cluster)
+registerDoSEQ()
+```
+```{r}
+rf
+```
+
+I thought result was pretty good and no need to adjust predictors or use any other method if prediction on test set was up to 95% accurate.  Next I looked at the important variables(appendix I), just to have an idea what was driving prediction.
+Also, if I needed to revisit Decision Tree, it would give me an idea what variables to include/exclude. 
+Since accuracy was over 99% with random forest on training set, I thought data was clean and standardized enough, no need for further processing. Next I used the predict() to make predictions on the test set, the result was;
+
+```{r,echo=TRUE}
+rfpred <-predict(rf,newdata = testing)
+rfpred
+```
+
+Actual user performance was not included in test set, I took quiz to see how good the predictions were, the result- 20 out of 20 predictions were correct. Though test set sample size was only 20, 100% accuracy was impressive. I decided random forest was a good model to predict this exercise and no further refinement of training set was needed.
+
+For completion, and comparison between random forest and boosting I decided to predict with Caret package boosting and method =”gbm”. Boosting accuracy was .995% on training set. 
+
+```{r,echo=FALSE}
+gbm <- train(classe ~ ., method="gbm", data=training, verbose=F)
+gbmPred <-predict(gbm,newdata = testing)
+```
+
+First 20 Importance variables were the same for boosting and random forest. Finally, I got boosting prediction on the test set and compared to random forest result. Both boosting and random forest prediction were the same and 100% accurate on test set appendix II
+
+In conclusion, prediction with Caret package random forest or boosting(gbm) gave over 99% accuracy on training set and 100% accuracy on test set. See appendix III for predictors used to train models and ML_wk4_projectB.Rmd for R code used for prediction.
+
+Appendix A
+```{r}
+g+geom_bar()
+```
+Appendix B
+
+```{r}
+h+geom_bar()
+```
+Appendix C
+```{r}
+fancyRpartPlot(rpart$finalModel)
+```
+
+Appendix I – Random Forest Important variables
+```{r,echo = TRUE}
+varImp(rf)
+
+```
+
+Appendix II Random Forest vs Boosting(gbm) Prediction
+
+```{r, echo=FALSE}
+z<-cbind(rfpred,gbmPred)
+```
+
+
+Appendix III – Predictors used in Training Set
+```{r,echo=FALSE}
+colnames(training)
+```
+
